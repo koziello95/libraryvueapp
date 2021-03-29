@@ -3,6 +3,7 @@ import Home from "@/components/Home.vue";
 import Counter from "@/components/Counter.vue";
 import FetchData from "@/components/FetchData.vue";
 import Login from '@/components/Login.vue'
+import Register from '@/components/Register.vue'
 import store from "@/store";
 
 
@@ -33,6 +34,11 @@ const routes = [
         name: "FetchData",
         component: FetchData,
         beforeEnter: authGuard
+    },
+    {
+        path: '/register',
+        name: 'Register',
+        component: Register
     },
     {
         path: '/login',

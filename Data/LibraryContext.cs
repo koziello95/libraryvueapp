@@ -1,4 +1,5 @@
 ﻿using libraryapp.Models;
+using libraryVueApp.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace libraryVueApp.Data
         {
 
         }
+
         public DbSet<Book> Books { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

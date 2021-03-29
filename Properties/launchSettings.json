@@ -19,7 +19,7 @@
     "libraryVueApp": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "fetchdata",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

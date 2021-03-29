@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using libraryVueApp.Data;
+using libraryVueApp.Dtos;
+using libraryVueApp.Model;
 using libraryVueApp.Model.Auth;
 using libraryVueApp.Security;
 using Microsoft.AspNetCore.Http;
@@ -14,21 +18,25 @@ namespace libraryVueApp.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+
+        public AuthController(IUserRepository userRepository, IMapper mapper)
+        {
+            _userRepository = userRepository;
+            _mapper = mapper;
+        }
         [HttpPost]
         public ActionResult<AuthResultModel> Post([FromBody] AuthRequestModel model)
         {
-            // NEVER DO THIS, JUST SHOWING THE EXAMPLE
-            if (model.Username == "verybasic"
-              && model.Password == "auth")
+            if(_userRepository.Login(model.Login, model.Password))
             {
                 var result = new AuthResultModel()
                 {
                     Success = true
                 };
 
-                // Never do this either, hardcoded strings
-                var token = TokenSecurity.GenerateJwt(model.Username);
-
+                var token = TokenSecurity.GenerateJwt(model.Login);
                 result.Token = new JwtSecurityTokenHandler().WriteToken(token);
                 result.Expiration = token.ValidTo;
 
@@ -36,7 +44,21 @@ namespace libraryVueApp.Controllers
 
             }
 
-            return BadRequest("Unknown failure");
+            return Unauthorized("Wrong login or password");
+        }
+        [HttpPost]
+        [Route("register/")]
+        public ActionResult Register([FromBody] CreateUserDto userdto)
+        {
+            //todo move to sql composite key
+            if (_userRepository.LoginAlreadyExists(userdto.Login))
+                return BadRequest("Login already taken!");
+
+            User user = _mapper.Map<User>(userdto);
+            _userRepository.AddNewUser(user);
+            _userRepository.SaveChanges();
+
+            return NoContent();
         }
     }
 }

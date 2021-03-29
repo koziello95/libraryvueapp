@@ -35,6 +35,7 @@ namespace libraryVueApp
             });
             services.AddDbContext<LibraryContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("LibraryConnection")));
             services.AddScoped<IBookRepository, SqlBookRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddControllers().AddNewtonsoftJson();
           
