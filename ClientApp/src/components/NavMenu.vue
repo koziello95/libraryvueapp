@@ -2,7 +2,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand">Vue JS Template for .NET 5</a>
+                <a class="navbar-brand">LibraryApp</a>
                 <button class="navbar-toggler"
                         type="button"
                         data-toggle="collapse"
@@ -13,18 +13,25 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
                      v-bind:class="{show: isExpanded}">
-                    <ul class="navbar-nav flex-grow">
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Home' }" class="nav-link text-dark">Home</router-link>
-                           
-                        </li>
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Counter' }" class="nav-link text-dark">Counter</router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'FetchData' }" class="nav-link text-dark">Fetch Data</router-link>
-                        </li>
-                    </ul>
+                    <div v-if="isAuthenticated">
+                        <ul class="navbar-nav flex-grow">
+                            <li class="nav-item">
+                                <router-link :to="{ name: 'Books' }" class="nav-link text-dark">List of books</router-link>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav flex-grow">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" @click="logout">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-if="!isAuthenticated">
+                        <ul class="navbar-nav flex-grow">
+                            <li class="nav-item">
+                                <router-link :to="{ name: 'Login' }" class="nav-link text-dark">Login</router-link>
+                            </li>
+                        </ul>                        
+                    </div>
                 </div>
             </div>
         </nav>
@@ -48,18 +55,21 @@
             font-size: 16px;
         }
     }
-
     .box-shadow {
         box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
     }
 </style>
 <script>
+
     export default {
         name: "NavMenu",
         data() {
             return {
-                isExpanded: false
+                isExpanded: false                
             }
+        },
+        computed: {
+            isAuthenticated: function(){ return this.$store.getters.isAuthenticated}
         },
         methods: {
             collapse() {
@@ -68,6 +78,11 @@
 
             toggle() {
                 this.isExpanded = !this.isExpanded;
+            },
+            logout: function () {
+                this.$store.dispatch("logout").then(() => {
+                    this.$router.push("/login");
+                })
             }
         }
     }

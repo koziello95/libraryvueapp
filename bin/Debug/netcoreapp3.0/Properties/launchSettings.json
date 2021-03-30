@@ -19,7 +19,7 @@
     "libraryVueApp": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "fetchdata",
+      "launchUrl": "login",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -11,7 +11,7 @@ export default createStore({
     error: ""
   },
   mutations: {
-    setColors: (state, colors) => state.colors = colors,
+    
     setBusy: (state) => state.isBusy = true,
     clearBusy: (state) => state.isBusy = false,
     setError: (state, error) => state.error = error,
@@ -28,20 +28,7 @@ export default createStore({
   getters: {
     isAuthenticated: (state) => state.token.length > 0 && state.expiration > Date.now()
   }, 
-  actions: {
-    loadColors: async ({ commit }) => {
-      try {
-        commit("setBusy");
-        commit("clearError");
-        const http = createHttp(); // secured
-        const colors = await http.get("/api/colors");
-        commit("setColors", colors.data);
-      } catch {
-        commit("setError", "Failed getting colors");
-      } finally {
-        commit("clearBusy");
-      }
-    }, 
+  actions: {   
     login: async ({ commit }, model) => {
       try {
         commit("setBusy");

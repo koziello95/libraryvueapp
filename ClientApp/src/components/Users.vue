@@ -1,13 +1,13 @@
-<template>
-    <h1 id="tableLabel">Books catalogue</h1>
+﻿<template>
+    <h1 id="tableLabel">List of users</h1>
     <p v-if="message">{{message}}</p>
-    <p v-if="!books"><em>Loading...</em></p>
+    <p v-if="!users"><em>Loading...</em></p>
 
-    <table class='table table-striped' aria-labelledby="tableLabel" v-if="books">
+    <table class='table table-striped' aria-labelledby="tableLabel" v-if="users">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Author</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
                 <th>Year Published)</th>
                 <th>Description</th>
             </tr>
@@ -30,9 +30,9 @@
 <script>
     import AddBook  from '@/components/AddBook.vue'
     import axios from 'axios'
-    
+
     export default {
-        name: "FetchData",
+        name: "Books",
         data() {
             return {
                 books: [],
@@ -61,7 +61,7 @@
                 axios.delete('/api/books/' + book.id)
                     .then(() => {
                         this.message = "Book removed";
-                        this.books.splice(this.books.indexOf(book), 1);                       
+                        this.books.splice(this.books.indexOf(book), 1);
                     })
                     .catch(function (error) {
                         alert(error);
