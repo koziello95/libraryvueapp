@@ -29,7 +29,11 @@ namespace libraryVueApp.Controllers
         [HttpPost]
         public ActionResult<AuthResultModel> Post([FromBody] AuthRequestModel model)
         {
-            if(_userRepository.Login(model.Login, model.Password))
+            User user = _userRepository.GetUserByLogin(model.Login);
+            if (user == null)
+                return Unauthorized("User does not exist");
+
+            if (_userRepository.Login(model.Login, model.Password))
             {
                 var result = new AuthResultModel()
                 {
@@ -39,6 +43,9 @@ namespace libraryVueApp.Controllers
                 var token = TokenSecurity.GenerateJwt(model.Login);
                 result.Token = new JwtSecurityTokenHandler().WriteToken(token);
                 result.Expiration = token.ValidTo;
+
+                result.Name = $"{user.Firstname} {user.Lastname}";
+                result.Roles = user.Roles.Select(o => o.RoleId.ToString()).ToArray();                
 
                 return Created("", result);
 

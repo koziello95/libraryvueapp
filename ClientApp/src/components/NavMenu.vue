@@ -2,7 +2,8 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand">LibraryApp</a>
+                <a v-if="isAuthenticated" class="navbar-brand">Dear {{name}}, Welcome to LibraryApp!</a>
+                <a v-if="!isAuthenticated" class="navbar-brand">Welcome to LibraryApp!</a>
                 <button class="navbar-toggler"
                         type="button"
                         data-toggle="collapse"
@@ -21,6 +22,11 @@
                         </ul>
                         <ul class="navbar-nav flex-grow">
                             <li class="nav-item">
+                                <router-link :to="{ name: 'Users' }" class="nav-link text-dark">List of users</router-link>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav flex-grow">
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" @click="logout">Logout</a>
                             </li>
                         </ul>
@@ -30,7 +36,7 @@
                             <li class="nav-item">
                                 <router-link :to="{ name: 'Login' }" class="nav-link text-dark">Login</router-link>
                             </li>
-                        </ul>                        
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -69,7 +75,9 @@
             }
         },
         computed: {
-            isAuthenticated: function(){ return this.$store.getters.isAuthenticated}
+            isAuthenticated: function () { return this.$store.getters.isAuthenticated },
+            name: function () { return this.$store.getters.userDetails },
+            isLibrarian: function () { return this.$store.getters.isLibrarian },
         },
         methods: {
             collapse() {

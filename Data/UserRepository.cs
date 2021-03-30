@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using libraryVueApp.Model;
 using libraryVueApp.Security;
+using Microsoft.EntityFrameworkCore;
 
 namespace libraryVueApp.Data
 {
@@ -27,13 +28,21 @@ namespace libraryVueApp.Data
 
         public IEnumerable<User> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return _libraryContext.Users.ToList();
         }
 
         public User GetUserById(int userId)
         {
             throw new NotImplementedException();
         }
+
+        public User GetUserByLogin(string login)
+        {
+            return _libraryContext.Users
+                .Include(u => u.Roles)
+                .FirstOrDefault(u => u.Login == login);                
+        }
+
         public bool Login(string login, string password)
         {
             User user = _libraryContext.Users.SingleOrDefault(u => u.Login == login);

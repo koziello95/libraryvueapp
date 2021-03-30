@@ -11,5 +11,7 @@ namespace libraryVueApp.Model.Auth
         public bool Success { get; set; }
         public string Token { get; set; }
         public DateTime Expiration { get; set; }
+        public string Name { get; set; }
+        public string[] Roles { get; set; }
     }
 }

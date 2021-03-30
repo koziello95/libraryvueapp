@@ -16,5 +16,6 @@ namespace libraryVueApp.Data
         bool SaveChanges();
         bool Single(Func<object, object> p);
         bool LoginAlreadyExists(string login);
+        User GetUserByLogin(string login);
     }
 }
