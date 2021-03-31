@@ -29,10 +29,11 @@ namespace libraryVueApp.Dtos.BookDtos
                 Author = b.Author,
                 YearPublished = b.YearPublished,
                 Description = b.Description,
-                ExpectedReturnDate = _bookOrders.SingleOrDefault(bo => bo.OrderStatus == OrderStatus.Borrowed && bo.BookId == b.Id)?.ExpectedReturnDate,
+                ExpectedReturnDate = _bookOrders.SingleOrDefault(bo => bo.OrderStatus == OrderStatus.Borrowed && bo.BookId == b.Id)?.ExpectedReturnDate.ToString("yyyy-mm-dd"),
                 Status = ResolveStatus(b, _bookOrders, _userId),
+                IsAbleToReturn = IsAbleToReturnThisBook(b, _bookOrders, _userId),
                 QueueLength = _bookOrders.Count(bo => bo.BookId == b.Id && bo.OrderStatus == OrderStatus.Requested)
-            });
+            }); ;
         }
 
         private BookStatus ResolveStatus(Book book, IEnumerable<BookOrder> bookOrders, int userId)
@@ -41,6 +42,11 @@ namespace libraryVueApp.Dtos.BookDtos
                 return BookStatus.AlreadyRequested;
 
             return _bookOrders.Any(bo => bo.BookId == book.Id && bo.OrderStatus == OrderStatus.Borrowed) ? BookStatus.Taken : BookStatus.Free;                
+        }
+
+        private bool IsAbleToReturnThisBook(Book book, IEnumerable<BookOrder> bookOrders, int userId)
+        {
+            return bookOrders.Any(bo => bo.BookId == book.Id && bo.UserId == userId && bo.OrderStatus == OrderStatus.Borrowed);
         }
     }
    

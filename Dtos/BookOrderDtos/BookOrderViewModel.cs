@@ -14,5 +14,6 @@ namespace libraryVueApp.Dtos
         public string Login { get; internal set; }
         public OrderStatus Status { get; internal set; }
         public int UserId { get; internal set; }
+        public string ExpectedReturnDate { get; internal set; }
     }
 }

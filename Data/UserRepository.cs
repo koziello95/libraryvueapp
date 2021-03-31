@@ -17,17 +17,28 @@ namespace libraryVueApp.Data
         }
         public void AddNewUser(User user)
         {
-            user.Password = PasswordHasher.Hash(user.Password);
-            _libraryContext.Users.Add(user);
+            user.Password = PasswordHasher.Hash(user.Password);            
+           _libraryContext.Users.Add(user);
         }
 
-        public void Delete(int userId)
+        public void AssignRole(User user, RoleType role)
         {
-            throw new NotImplementedException();
+            _libraryContext.UserRoles.Add(new UserRole
+            {
+                RoleId = role,
+                UserId = user.Id
+            });
         }
 
-        public IEnumerable<User> GetAllUsers()
+        public void Delete(User user)
         {
+            _libraryContext.Users.Remove(user);
+        }
+
+        public IEnumerable<User> GetAllUsers(bool includeRoles = false)
+        {
+            if (includeRoles)
+                return _libraryContext.Users.Include(u => u.Roles);
             return _libraryContext.Users.ToList();
         }
 

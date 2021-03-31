@@ -63,7 +63,8 @@ namespace libraryVueApp.Controllers
                     Lastname = bo.User.Lastname,
                     UserId = bo.User.Id,
                     Status = bo.OrderStatus,
-                    BookOrderId = bo.Id
+                    BookOrderId = bo.Id,
+                    ExpectedReturnDate = bo.ExpectedReturnDate.ToString("yyyy-mm-dd")
                 })
                 .OrderBy(vm => (int)vm.Status);                
 

@@ -10,6 +10,7 @@
                 <th>Lastname</th>
                 <th>Login</th>
                 <th>Role</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -17,34 +18,37 @@
                 <td>{{ user.firstname }}</td>
                 <td>{{ user.lastname}}</td>
                 <td>{{ user.login}}</td>
-                <td>{{ user.role}}</td>
-                <td><button @click=deleteBook(book)>Delete account</button></td>
+                <td>{{ user.roles}}</td>
+              
+                <td>
+                    <button v-if="isLibrarian && !user.roles.includes('Librarian')" class="btn btn-info" @click=assignLibrarian(user)>Assign Librarian role</button>
+                    <button class="btn btn-warning" @click=deleteUser(user)>Delete account</button>
+                </td>
             </tr>
         </tbody>
     </table>
-    <!--<add-book @newuser="addNewUser"></add-book>-->
 
 </template>
 
 
 <script>
-    //import AddBook  from '@/components/AddBook.vue'
-    import axios from 'axios'
+    import createHttp from "@/services/http";
 
     export default {
         name: "Users",
         data() {
             return {
                 users: [],
-                message:""
+                message: "",
+                http: ""
             }
         },
-        //components: {
-        //    AddBook
-        //},
+        computed: {
+            isLibrarian: function () { return this.$store.getters.isLibrarian }
+        },
         methods: {
             getUsers() {
-                axios.get('/api/users')
+                this.http.get('/api/users')
                     .then((response) => {
                         this.users =  response.data;
                     })
@@ -52,21 +56,28 @@
                         alert(error);
                     });
             },
-            //addNewBook(book) {
-            //    this.books.push(book);
-            //},
-            deleteBook(user) {
-                axios.delete('/api/users/' + user.id)
+            deleteUser(user) {
+                this.http.delete('/api/users/' + user.id)
                     .then(() => {
-                        this.message = "Book removed";
-                        this.books.splice(this.user.indexOf(user), 1);
+                        this.message = "User deleted";
+                        this.users.splice(this.users.indexOf(user), 1);
                     })
                     .catch(function (error) {
                         alert(error);
-                    });
+                    });               
+            },
+            assignLibrarian(user) {
+                this.http.post('/api/users/' + user.id + '/assignlibrarian')
+                  .then(() => {
+                        user.roles += ",Librarian";                        
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });     
             }
         },
         mounted() {
+            this.http = createHttp(true);
             this.getUsers();
         }
     }

@@ -1,16 +1,16 @@
 ﻿<template>
     <h3>Add a new book in below form</h3>
     <div class="form-group">
-        <input v-model="model.title" type="text" placeholder="Book Title" />
+        <input class="form-control" v-model="model.title" type="text" placeholder="Book Title" />
     </div>
     <div class="form-group">
-        <input v-model="model.yearPublished" type="number" placeholder="2000" />
+        <input class="form-control" v-model="model.yearPublished" type="number" placeholder="2000" />
     </div>
     <div class="form-group">
-        <input v-model="model.author" type="text" placeholder="Author" />
+        <input class="form-control" v-model="model.author" type="text" placeholder="Author" />
     </div>
     <div class="form-group">
-        <input v-model="model.description" type="text" placeholder="Short description" />
+        <input class="form-control" v-model="model.description" type="text" placeholder="Short description" />
     </div>
     <div class="form-group">
         <button class="btn btn-success" @click="save">Add book</button>
@@ -23,6 +23,7 @@
 
     export default {
         name: "AddBook",
+        emits: ["newbook"],
         data() {
             return {
                 model: {

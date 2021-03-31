@@ -12,8 +12,8 @@ namespace libraryVueApp.Data
     public class BookOrderRepository : IBookOrderRepository
     {
         private readonly LibraryContext _libraryContext;
-        private int _maxNumberOfBorrowedBooks;
-
+        private int _maxNumberOfBorrowedBooks = 3;
+        private int _daysToBookReturn = 30;
         public BookOrderRepository(LibraryContext libraryContext)
         {
             _libraryContext = libraryContext;
@@ -60,6 +60,7 @@ namespace libraryVueApp.Data
                 };
 
             bookOrder.OrderStatus = OrderStatus.Borrowed;
+            bookOrder.ExpectedReturnDate = DateTime.UtcNow.AddDays(_daysToBookReturn);
             _libraryContext.BookOrders.Update(bookOrder);
             return new DisposeBookResult
             {
@@ -147,7 +148,7 @@ namespace libraryVueApp.Data
         public HasOverDueBooksResult UserHasOverdueBookOrders(int userId)
         {
             var hasOverdueBooks = _libraryContext.BookOrders
-                .Any(bo => bo.UserId == userId && bo.OrderStatus == OrderStatus.Borrowed && bo.ExpectedReturnDate > DateTime.UtcNow);
+                .Any(bo => bo.UserId == userId && bo.OrderStatus == OrderStatus.Borrowed && bo.ExpectedReturnDate < DateTime.UtcNow);
 
 
             if (hasOverdueBooks)

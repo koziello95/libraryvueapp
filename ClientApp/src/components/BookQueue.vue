@@ -4,17 +4,17 @@
             <tr>
                 <th>Login</th>
                 <th>Full name</th>
-                <th>Year Published</th>
                 <th>Status</th>
-                <th>Description</th>
+                <th>Expected return date</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="queueItem of queueItems" v-bind:key="queueItem">
                 <td>{{ queueItem.login }}</td>
-                <td>{{ queueItem.firstname }} {{queueItem.lastname}}</td>    
-                <td>{{ bookOrderStatuses[queueItem.status]}}</td>
+                <td>{{ queueItem.firstname }} {{ queueItem.lastname }}</td>
+                <td>{{ bookOrderStatuses[queueItem.status] }}</td>
+                <td>{{ queueItem.expectedReturnDate }}</td>
                 <td>
                     <button v-if="!queueItems.some((item)=> item.status == 2) && queueItem.status != 3" @click=dispose(queueItem) class="btn btn-info">Dispose book to reader</button>
                     <button v-if="queueItem.status == 2" @click=returnBook(queueItem) class="btn btn-info">Return book</button>
@@ -63,19 +63,20 @@
                         alert(response.data.message);
                         queueItem.status = 2;//borrowed
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        console.log(error);
+                         alert(error.response.data);
                     });
             },
             returnBook(queueItem) {
-                console.log(queueItem.userId);
                 this.http.put('/api/books/' + this.$route.params.id + "/return", queueItem.userId, {headers: {"Content-Type": "application/json"}})
                     .then((response) => {
+                        queueItem.status = 3;
                         alert(response.data.message);
                         return false;
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        alert(error.response.data);
                         return false;
                     });
             }

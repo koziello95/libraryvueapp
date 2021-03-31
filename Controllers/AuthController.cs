@@ -65,6 +65,8 @@ namespace libraryVueApp.Controllers
             User user = _mapper.Map<User>(userdto);
             _userRepository.AddNewUser(user);
             _userRepository.SaveChanges();
+            _userRepository.AssignRole(user, RoleType.Reader);
+            _userRepository.SaveChanges();
 
             return NoContent();
         }

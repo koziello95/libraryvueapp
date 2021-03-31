@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using libraryVueApp.Data;
+using libraryVueApp.Dtos.UserDtos;
 using libraryVueApp.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,20 @@ namespace libraryVueApp.Controllers
         }
         // GET: api/User
         [HttpGet]
-        public IEnumerable<User> Get()
+        public IEnumerable<UserViewModel> Get()
         {
-            var users = _userRepository.GetAllUsers();
-            return users;
+            var users = _userRepository.GetAllUsers(includeRoles: true);
+
+            IEnumerable<UserViewModel> userVms = users.Select(u => new UserViewModel
+            {
+                Id = u.Id,
+                Login = u.Login,
+                Firstname = u.Firstname,
+                Lastname = u.Lastname,
+                Roles = string.Join(",", u.Roles.Select(r => r.RoleId.ToString()))
+            });
+
+            return userVms;
         }
 
         // GET: api/User/5
@@ -37,9 +48,17 @@ namespace libraryVueApp.Controllers
         }
 
         // POST: api/User
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("{id}/assignlibrarian")]
+        public ActionResult Post(int id)
         {
+            var user = _userRepository.GetUserById(id);
+            if (user == null) ;
+            NotFound("User with given id was not found");
+
+            _userRepository.AssignRole(user, RoleType.Librarian);
+            _userRepository.SaveChanges();
+
+            return Ok();
         }
 
         // PUT: api/User/5
@@ -50,8 +69,16 @@ namespace libraryVueApp.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            var user = _userRepository.GetUserById(id);
+            if (user == null)
+                return NotFound("User with given id was not found");
+
+            _userRepository.Delete(user);
+            _userRepository.SaveChanges();
+
+            return Ok();
         }
 
         [HttpGet("{id}/hasoverduebooks")]

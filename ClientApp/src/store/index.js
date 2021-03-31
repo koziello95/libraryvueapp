@@ -59,7 +59,7 @@ export default createStore({
         },
         logout: ({ commit }) => {
             commit("clearToken");
-            router.push("/books");
+            router.push("/login");
         }
     }
 })

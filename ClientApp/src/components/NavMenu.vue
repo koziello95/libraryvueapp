@@ -20,14 +20,14 @@
                                 <router-link :to="{ name: 'Books' }" class="nav-link text-dark">List of books</router-link>
                             </li>
                         </ul>
-                        <ul class="navbar-nav flex-grow">
+                        <ul v-if="isLibrarian" class="navbar-nav flex-grow">
                             <li class="nav-item">
                                 <router-link :to="{ name: 'Users' }" class="nav-link text-dark">List of users</router-link>
                             </li>
                         </ul>
                         <ul class="navbar-nav flex-grow">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" @click="logout">Logout</a>
+                                <span class="nav-link text-dark" @click="logout">Logout</span>
                             </li>
                         </ul>
                     </div>
