@@ -62,6 +62,7 @@ namespace libraryVueApp.Data
             bookOrder.OrderStatus = OrderStatus.Borrowed;
             bookOrder.ExpectedReturnDate = DateTime.UtcNow.AddDays(_daysToBookReturn);
             _libraryContext.BookOrders.Update(bookOrder);
+            _libraryContext.SaveChanges();
             return new DisposeBookResult
             {
                 Success = true,
@@ -82,7 +83,7 @@ namespace libraryVueApp.Data
                 OrderStatus = OrderStatus.Requested,
                 ExpectedReturnDate = DateTime.UtcNow
             });
-
+            _libraryContext.SaveChanges();
             var pendingBookRequests = _libraryContext.BookOrders.Where(bookOrder => bookOrder.BookId == book.Id && bookOrder.OrderStatus != OrderStatus.Returned).ToArray();
 
             if (pendingBookRequests.Any(bo => bo.OrderStatus == OrderStatus.Borrowed && bo.UserId == user.Id))
@@ -112,18 +113,13 @@ namespace libraryVueApp.Data
 
             bookOrder.OrderStatus = OrderStatus.Returned;
             _libraryContext.BookOrders.Update(bookOrder);
+            _libraryContext.SaveChanges();
                 return new ReturnBookResult
                 {
                     Success = true,
                     Message = "Successfully returned book to the library!"
                 };
-        }
-
-        public bool SaveChanges()
-        {
-            _libraryContext.SaveChanges();
-            return true;
-        }
+        }     
 
         public BookOrder GetById(int bookOrderId)
         {

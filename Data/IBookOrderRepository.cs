@@ -15,7 +15,6 @@ namespace libraryVueApp.Data
         BookOrder GetLatestBookOrder(int bookId, int returningUserId);
         IEnumerable<BookOrder> GetBookOrders();
         List<BookOrder> GetBookOrders(int bookId, bool includeUsers = false);
-        bool SaveChanges();
         BookOrder GetById(int bookOrderId);
         UserLimitCheckResult HasReachedLimitOfBooksBorrowed(int userId);
         HasOverDueBooksResult UserHasOverdueBookOrders(int userId);

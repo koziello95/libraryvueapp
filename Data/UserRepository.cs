@@ -17,8 +17,9 @@ namespace libraryVueApp.Data
         }
         public void AddNewUser(User user)
         {
-            user.Password = PasswordHasher.Hash(user.Password);            
-           _libraryContext.Users.Add(user);
+            user.Password = PasswordHasher.Hash(user.Password);
+            _libraryContext.Users.Add(user);
+            _libraryContext.SaveChanges();
         }
 
         public void AssignRole(User user, RoleType role)
@@ -28,11 +29,13 @@ namespace libraryVueApp.Data
                 RoleId = role,
                 UserId = user.Id
             });
+            _libraryContext.SaveChanges();
         }
 
         public void Delete(User user)
         {
             _libraryContext.Users.Remove(user);
+            _libraryContext.SaveChanges();
         }
 
         public IEnumerable<User> GetAllUsers(bool includeRoles = false)
@@ -64,14 +67,8 @@ namespace libraryVueApp.Data
         }
 
         public bool LoginAlreadyExists(string login) =>
-            _libraryContext.Users.SingleOrDefault(u => u.Login == login) != null;
-        
+            _libraryContext.Users.SingleOrDefault(u => u.Login == login) != null;        
 
-        public bool SaveChanges()
-        {
-            _libraryContext.SaveChanges();
-            return true;
-        }
 
         public bool Single(Func<object, object> p)
         {

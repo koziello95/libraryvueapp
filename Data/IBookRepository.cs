@@ -11,7 +11,6 @@ namespace libraryVueApp.Data
         Book GetBook(int id);
         IEnumerable<Book> GetBooks();
         void AddBook(Book book);
-        bool SaveChanges();
         void Update(Book book);
         void Delete(Book book);
     }

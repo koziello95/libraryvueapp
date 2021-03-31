@@ -22,6 +22,7 @@ namespace libraryVueApp.Data
                 throw new ArgumentNullException(nameof(book));
             }
             _context.Books.Add(book);
+            _context.SaveChanges();
         }
 
         public void Delete(Book book)
@@ -31,6 +32,7 @@ namespace libraryVueApp.Data
                 throw new ArgumentNullException(nameof(book));
             }
             _context.Books.Remove(book);
+            _context.SaveChanges();
         }
 
         public Book GetBook(int id)
@@ -42,13 +44,7 @@ namespace libraryVueApp.Data
         {
             return _context.Books.ToList();
         }
-
-        public bool SaveChanges()
-        {
-            _context.SaveChanges();
-            return true;
-        }
-
+           
         public void Update(Book book)
         {
             if (book == null)
@@ -56,6 +52,7 @@ namespace libraryVueApp.Data
                 throw new ArgumentNullException(nameof(book));
             }
             _context.Books.Update(book);
+            _context.SaveChanges();
         }
     }
 }

@@ -13,7 +13,6 @@ namespace libraryVueApp.Data
         IEnumerable<User> GetAllUsers(bool includeRoles = false);
         void Delete(User user);
         bool Login(string login, string password);
-        bool SaveChanges();
         bool Single(Func<object, object> p);
         bool LoginAlreadyExists(string login);
         User GetUserByLogin(string login);

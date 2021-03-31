@@ -55,8 +55,7 @@ namespace libraryVueApp.Controllers
             if (user == null) ;
             NotFound("User with given id was not found");
 
-            _userRepository.AssignRole(user, RoleType.Librarian);
-            _userRepository.SaveChanges();
+            _userRepository.AssignRole(user, RoleType.Librarian);            
 
             return Ok();
         }
@@ -76,7 +75,6 @@ namespace libraryVueApp.Controllers
                 return NotFound("User with given id was not found");
 
             _userRepository.Delete(user);
-            _userRepository.SaveChanges();
 
             return Ok();
         }

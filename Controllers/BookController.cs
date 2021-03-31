@@ -84,7 +84,6 @@ namespace libraryVueApp.Controllers
         {
             Book book = _mapper.Map<Book>(createBookDto);
             _bookRepository.AddBook(book);
-            _bookRepository.SaveChanges();
             return CreatedAtRoute(nameof(GetBookById), new { book.Id }, book);
         }
 
@@ -93,7 +92,7 @@ namespace libraryVueApp.Controllers
         public ActionResult<Book> UpdateBook(int id, Book book)
         {
             _bookRepository.Update(book);
-            _bookRepository.SaveChanges();
+            
             return NoContent();
         }
 
@@ -107,7 +106,7 @@ namespace libraryVueApp.Controllers
                 return NotFound();
 
             _bookRepository.Delete(book);
-            _bookRepository.SaveChanges();
+            
             return NoContent();
         }
         [HttpPut("{bookId}/order")]
@@ -122,10 +121,8 @@ namespace libraryVueApp.Controllers
 
             RequestBookResult result = _bookOrderRepository.RequestBook(book, user);
 
-            if (_bookOrderRepository.SaveChanges())
+            
                 return Ok(result);
-
-            return StatusCode(500);
         }
 
         [HttpPut("{bookId}/return")]
@@ -136,10 +133,8 @@ namespace libraryVueApp.Controllers
                 return NotFound("Failed to return the book. This user didn't have this book borrowed.");
 
             ReturnBookResult result = _bookOrderRepository.ReturnBook(bookOrder);
-            if (_bookOrderRepository.SaveChanges())
+           
                 return Ok(result);
-
-            return StatusCode(500);
         }
 
         [HttpPut("{bookId}/dispose/{bookOrderId}")]
@@ -158,10 +153,8 @@ namespace libraryVueApp.Controllers
                 return NotFound(checkResult.Message);
 
             DisposeBookResult result = _bookOrderRepository.DisposeBook(bookOrder);
-            if (_bookOrderRepository.SaveChanges())
+            
                 return Ok(result);
-
-            return StatusCode(500);
         }        
     }
 
