@@ -34,6 +34,7 @@ export default createStore({
     getters: {
         isAuthenticated: (state) => state.token.length > 0 && state.expiration > Date.now(),
         isLibrarian: (state) => state.roles.includes("Librarian"),
+        isReader: (state) => state.roles.includes("Reader"),
         userDetails: (state) => state.name
     },
     actions: {

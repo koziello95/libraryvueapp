@@ -27,10 +27,10 @@
                 <td>{{ book.queueLength}} </td>
                 <!--<td><button v-if="isLibrarian" @click=borrow(book)>Borrow</button></td>-->
                 <td>
-                    <button v-if="isLibrarian && bookStatuses[book.status]=='Taken'" @click=borrow(book) class="btn btn-info">Get in queue</button>
-                    <button v-if="isLibrarian && bookStatuses[book.status]=='Free'" @click=borrow(book) class="btn btn-info">Request the book</button>
-                    <button disabled v-if="isLibrarian && bookStatuses[book.status]=='Already requested'" @click=borrow(book) class="btn btn-info">Already requested</button>
-                    <button v-if="isLibrarian && bookStatuses[book.status]=='Taken'" @click=returnBook(book) class="btn btn-info">Return book</button>
+                    <button v-if="isReader && bookStatuses[book.status]=='Taken'" @click=borrow(book) class="btn btn-info">Get in queue</button>
+                    <button v-if="isReader && bookStatuses[book.status]=='Free'" @click=borrow(book) class="btn btn-info">Request the book</button>
+                    <button disabled v-if="isReader && bookStatuses[book.status]=='Already requested'" @click=borrow(book) class="btn btn-info">Already requested</button>
+                    <button v-if="isReader && bookStatuses[book.status]=='Taken'" @click=returnBook(book) class="btn btn-info">Return book</button>
                     <!--<td><button v-if="isLibrarian" @click=getInQueue(book)>Get in queue for the book</button></td>-->
                     <button v-if="isLibrarian" @click=showQueue(book) class="btn btn-warning">Show readers queue</button>
                     <button v-if="isLibrarian" @click=deleteBook(book) class="btn btn-warning">Delete</button>
@@ -65,6 +65,7 @@
         },
         computed: {            
             isLibrarian: function () { return this.$store.getters.isLibrarian },
+            isReader: function () { return this.$store.getters.isReader },
         },
         components: {
             AddBook
