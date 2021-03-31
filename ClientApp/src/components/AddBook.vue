@@ -30,7 +30,8 @@
                     title: "",
                     yearPublished: 0,
                     author: "",
-                    description: ""
+                    description: "",
+                    status: 1 //free
                 },
                 message: "",
                 http: "",
@@ -41,6 +42,7 @@
                 this.http.post('/api/books', this.model)
                     .then((response) => {
                         this.message = response.statusText;
+                        response.data.status = 1;//free
                         this.$emit('newbook', response.data);
                         return false;
                     })
