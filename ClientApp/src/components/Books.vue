@@ -3,7 +3,12 @@
     <p v-if="message">{{message}}</p>
     <p v-if="!books"><em>Loading...</em></p>
 
-    <table class='table table-striped' aria-labelledby="tableLabel" v-if="books">
+
+    <input type="text"
+           placeholder="Search anything"
+           v-model="filter" />
+
+    <table class='table table-striped' aria-labelledby="tableLabel" v-if="filteredBooks">
         <thead>
             <tr>
                 <th>Title</th>
@@ -17,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="book of books" v-bind:key="book">
+            <tr v-for="book of filteredBooks" v-bind:key="book">
                 <td>{{ book.title }}</td>
                 <td>{{ book.author }}</td>
                 <td>{{ book.yearPublished }}</td>
@@ -47,11 +52,14 @@
     import AddBook from '@/components/AddBook.vue'
     import createHttp from "@/services/http";
     import router from "@/router";
+
+
     export default {
         name: "Books",
         data() {
             return {
                 books: [],
+                allBooks:[],
                 message: "",
                 http: "",
                 bookStatuses:
@@ -60,12 +68,28 @@
                     2: "Taken",
                     3: "Already requested"
                 },
-                hasOverdueBooks: false
+                hasOverdueBooks: false,
+                filter:''
             }
         },
-        computed: {            
+        computed: {
             isLibrarian: function () { return this.$store.getters.isLibrarian },
             isReader: function () { return this.$store.getters.isReader },
+            filteredBooks() {
+                return this.books.filter(book => {
+                    const titles = book.title.toString().toLowerCase();
+                    const authors = book.author.toLowerCase();
+                    const descriptions = book.description.toLowerCase();
+                    const statuses = this.bookStatuses[book.status].toLowerCase();
+                    const searchTerm = this.filter.toLowerCase();
+
+                    return titles.includes(searchTerm) ||
+                        authors.includes(searchTerm) ||
+                        descriptions.includes(searchTerm) ||
+                        statuses.includes(searchTerm);
+
+                })
+            }
         },
         components: {
             AddBook
@@ -74,7 +98,7 @@
             getBooks() {
                 this.http.get('/api/books')
                     .then((response) => {
-                        this.books =  response.data;
+                        this.allBooks = this.books = response.data;
                     })
                     .catch(function (error) {
                         alert(error);
