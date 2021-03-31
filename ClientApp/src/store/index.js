@@ -9,7 +9,8 @@ export default createStore({
         isBusy: false,
         error: "",
         name: "",
-        roles: []
+        roles: [],
+        userId: 0
     },
     mutations: {
 
@@ -22,6 +23,7 @@ export default createStore({
             state.expiration = new Date(model.expiration)
             state.name = model.name;
             state.roles = model.roles;
+            state.userId = model.userId;
         },
 
         clearToken: (state) => {
@@ -43,7 +45,7 @@ export default createStore({
                 const result = await http.post("/api/auth", model);
                 if (result.data.success) {
                     commit("setToken", result.data);
-                    router.push("/");
+                    router.push("/books");
                 }
                 else {
                     commit("setError", "Authentication Failed");
@@ -56,7 +58,7 @@ export default createStore({
         },
         logout: ({ commit }) => {
             commit("clearToken");
-            router.push("/");
+            router.push("/books");
         }
     }
 })

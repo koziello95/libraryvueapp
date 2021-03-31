@@ -1,18 +1,28 @@
-﻿<template> 
+﻿<template>
+    <h3>Add a new book in below form</h3>
+    <div class="form-group">
         <input v-model="model.title" type="text" placeholder="Book Title" />
+    </div>
+    <div class="form-group">
         <input v-model="model.yearPublished" type="number" placeholder="2000" />
+    </div>
+    <div class="form-group">
         <input v-model="model.author" type="text" placeholder="Author" />
-        <input v-model="model.description"  type="text" placeholder="Short description" />
-        <button @click="save">Add book</button>
-  
+    </div>
+    <div class="form-group">
+        <input v-model="model.description" type="text" placeholder="Short description" />
+    </div>
+    <div class="form-group">
+        <button class="btn btn-success" @click="save">Add book</button>
+    </div>
     <p>{{message}}</p>
 </template>
 
 <script>
-       import axios from 'axios'
+    import createHttp from "@/services/http";
 
     export default {
-        name: "AddBook",        
+        name: "AddBook",
         data() {
             return {
                 model: {
@@ -22,14 +32,15 @@
                     author: "",
                     description: ""
                 },
-                message:""
+                message: "",
+                http: "",
             }
         },
         methods: {
             save() {
-                axios.post('/api/books', this.model)
+                this.http.post('/api/books', this.model)
                     .then((response) => {
-                        this.message = response.statusText;      
+                        this.message = response.statusText;
                         this.$emit('newbook', response.data);
                         return false;
                     })
@@ -38,6 +49,9 @@
                         return false;
                     });
             }
+        },
+        mounted() {
+            this.http = createHttp(true);
         }
 
     };

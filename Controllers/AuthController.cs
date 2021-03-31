@@ -45,7 +45,8 @@ namespace libraryVueApp.Controllers
                 result.Expiration = token.ValidTo;
 
                 result.Name = $"{user.Firstname} {user.Lastname}";
-                result.Roles = user.Roles.Select(o => o.RoleId.ToString()).ToArray();                
+                result.Roles = user.Roles.Select(o => o.RoleId.ToString()).ToArray();
+                result.UserId = user.Id;
 
                 return Created("", result);
 

@@ -6,7 +6,10 @@ export default function createHttp(secured = true) {
 
   if (secured) {
     return axios.create({
-      headers: { "Authorization": `bearer ${store.state.token}` }
+        headers: {
+            "Authorization": `bearer ${store.state.token}`,
+            "UserId": store.state.userId
+        }
     });
   } else {
     return axios.create();

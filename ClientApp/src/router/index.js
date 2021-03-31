@@ -1,5 +1,6 @@
 ﻿import { createWebHistory, createRouter } from "vue-router";
 import Books from "@/components/Books.vue";
+import Users from "@/components/Users.vue";
 import Login from '@/components/Login.vue'
 import Register from '@/components/Register.vue'
 import store from "@/store";
@@ -21,9 +22,9 @@ const routes = [
         beforeEnter: authGuard
     },
     {
-        path: "/",
-        name: "Books",
-        component: Books,
+        path: "/users",
+        name: "Users",
+        component: Users,
         beforeEnter: authGuard
     },
     {
@@ -43,5 +44,8 @@ const router = createRouter({
     routes,
 });
 
+router.afterEach(() => {
+    store.commit("clearError");
+});
 
 export default router;

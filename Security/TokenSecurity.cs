@@ -13,8 +13,7 @@ namespace libraryVueApp.Security
     public static class TokenSecurity
     {
         // Hard coded security keys
-        // DO NOT DO THIS, SERIOUSLY
-        // JUST AN EXAMPLE
+        //TODO make it secure by introducing real keys
         public static readonly string SIGNING_KEY = "FOOBARQUUX_FOOBARQUUX_FOOBARQUUX_FOOBARQUUX";
         public static readonly string ISSUER = "localhost";
         public static readonly string AUDIENCE = "All";

@@ -13,5 +13,6 @@ namespace libraryVueApp.Model.Auth
         public DateTime Expiration { get; set; }
         public string Name { get; set; }
         public string[] Roles { get; set; }
+        public int UserId { get; internal set; }
     }
 }
