@@ -68,8 +68,8 @@
             },
             assignLibrarian(user) {
                 this.http.post('/api/users/' + user.id + '/assignlibrarian')
-                  .then(() => {
-                        user.roles += ",Librarian";                        
+                    .then(() => {
+                        this.getUsers();
                     })
                     .catch(function (error) {
                         alert(error);

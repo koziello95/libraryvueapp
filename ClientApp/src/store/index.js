@@ -49,9 +49,11 @@ export default createStore({
                     router.push("/books");
                 }
                 else {
+                    
                     commit("setError", "Authentication Failed");
                 }
             } catch {
+                alert("Wrong login or password");
                 commit("setError", "Failed to login");
             } finally {
                 commit("clearBusy");
