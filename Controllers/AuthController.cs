@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using libraryVueApp.Data;
 using libraryVueApp.Dtos;
 using libraryVueApp.Model;
 using libraryVueApp.Model.Auth;
 using libraryVueApp.Security;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace libraryVueApp.Controllers

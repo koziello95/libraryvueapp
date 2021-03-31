@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using libraryVueApp.Model;
+﻿using libraryVueApp.Model;
 
 namespace libraryVueApp.Dtos
 {
