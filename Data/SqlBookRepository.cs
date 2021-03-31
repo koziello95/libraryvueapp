@@ -45,7 +45,8 @@ namespace libraryVueApp.Data
 
         public bool SaveChanges()
         {
-            return _context.SaveChanges() == 0;
+            _context.SaveChanges();
+            return true;
         }
 
         public void Update(Book book)

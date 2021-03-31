@@ -11,14 +11,17 @@ namespace libraryVueApp.Data
     {
         RequestBookResult RequestBook(Book book, User user);
         ReturnBookResult ReturnBook(BookOrder bookOrder);
-        GiveBookResult GiveBook(BookOrder bookOrder);
+        DisposeBookResult DisposeBook(BookOrder bookOrder);
         BookOrder GetLatestBookOrder(int bookId, int returningUserId);
         IEnumerable<BookOrder> GetBookOrders();
         List<BookOrder> GetBookOrders(int bookId, bool includeUsers = false);
         bool SaveChanges();
+        BookOrder GetById(int bookOrderId);
+        UserLimitCheckResult HasReachedLimitOfBooksBorrowed(int userId);
+        HasOverDueBooksResult UserHasOverdueBookOrders(int userId);
     }
 
-    public class GiveBookResult
+    public class DisposeBookResult
     {
         public bool Success { get; internal set; }
         public string Message { get; internal set; }
@@ -35,4 +38,16 @@ namespace libraryVueApp.Data
         public bool Success { get; internal set; }
         public string Message { get; internal set; }
     }
+    public class UserLimitCheckResult
+    {
+        public bool Success { get; internal set; }
+        public string Message { get; internal set; }
+    }
+
+    public class HasOverDueBooksResult
+    {
+        public bool Success { get; internal set; }
+        public string Message { get; internal set; }
+    }
+
 }

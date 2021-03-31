@@ -50,18 +50,24 @@ namespace libraryVueApp.Controllers
 
             return Ok(booksViewModels);
         }
-        [HttpGet("{id}/queue")]
+        [HttpGet("{bookId}/queue")]
         public ActionResult<IEnumerable<BookOrderViewModel>> GetQueueDetails(int bookId)
         {
-            List<BookOrder> bookOrders = _bookOrderRepository.GetBookOrders(bookId);
+            List<BookOrder> bookOrders = _bookOrderRepository.GetBookOrders(bookId, true);
 
-            bookOrders.Select(bo => new BookOrderViewModel
-            {
-                //get user details
-            });
-            
+            IEnumerable<BookOrderViewModel> bookOrderViewModels = bookOrders
+                .Select(bo => new BookOrderViewModel
+                {
+                    Login = bo.User.Login,
+                    Firstname = bo.User.Firstname,
+                    Lastname = bo.User.Lastname,
+                    UserId = bo.User.Id,
+                    Status = bo.OrderStatus,
+                    BookOrderId = bo.Id
+                })
+                .OrderBy(vm => (int)vm.Status);                
 
-            return Ok(bookOrders);
+            return Ok(bookOrderViewModels);
         }
 
         // GET api/books/{id}
@@ -121,7 +127,7 @@ namespace libraryVueApp.Controllers
             return StatusCode(500);
         }
 
-        [HttpPut("{id}/return")]
+        [HttpPut("{bookId}/return")]
         public ActionResult<RequestBookResult> ReturnBook(int bookId, [FromBody]int returningUserId)
         {
             BookOrder bookOrder = _bookOrderRepository.GetLatestBookOrder(bookId, returningUserId);
@@ -135,6 +141,28 @@ namespace libraryVueApp.Controllers
             return StatusCode(500);
         }
 
+        [HttpPut("{bookId}/dispose/{bookOrderId}")]
+        public ActionResult<RequestBookResult> DisposeBook(int bookId, int bookOrderId)
+        {
+            IEnumerable<BookOrder> bookOrders = _bookOrderRepository.GetBookOrders(bookId);
+
+            if(bookOrders.Any(bo => bo.OrderStatus == OrderStatus.Borrowed))
+                return NotFound("Failed to dispose a book. Book is already borrowed");
+
+
+            BookOrder bookOrder = bookOrders.Single(bo => bo.Id == bookOrderId);
+
+            UserLimitCheckResult checkResult = _bookOrderRepository.HasReachedLimitOfBooksBorrowed(bookOrder.UserId);
+            if (checkResult.Success == false)
+                return NotFound(checkResult.Message);
+
+            DisposeBookResult result = _bookOrderRepository.DisposeBook(bookOrder);
+            if (_bookOrderRepository.SaveChanges())
+                return Ok(result);
+
+            return StatusCode(500);
+        }        
     }
 
+ 
 }

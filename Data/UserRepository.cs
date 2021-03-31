@@ -58,7 +58,8 @@ namespace libraryVueApp.Data
 
         public bool SaveChanges()
         {
-            return _libraryContext.SaveChanges() == 0;
+            _libraryContext.SaveChanges();
+            return true;
         }
 
         public bool Single(Func<object, object> p)
