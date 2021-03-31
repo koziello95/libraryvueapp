@@ -1,5 +1,5 @@
 ﻿<template>
-    <h1 id="tableLabel">List of users</h1>
+    <h1 id="tableLabel">List of Readers</h1>
     <p v-if="message">{{message}}</p>
     <p v-if="!users"><em>Loading...</em></p>
 
@@ -8,60 +8,58 @@
             <tr>
                 <th>Firstname</th>
                 <th>Lastname</th>
-                <th>Year Published)</th>
-                <th>Description</th>
+                <th>Login</th>
+                <th>Role</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="book of books" v-bind:key="book">
-                <td>{{ book.title }}</td>
-                <td>{{ book.author }}</td>
-                <td>{{ book.yearPublished }}</td>
-                <td width="40%">{{ book.description}}</td>
-                <td><button @click=deleteBook(book)>Delete</button></td>
+            <tr v-for="user of users" v-bind:key="user">
+                <td>{{ user.firstname }}</td>
+                <td>{{ user.lastname}}</td>
+                <td>{{ user.login}}</td>
+                <td>{{ user.role}}</td>
+                <td><button @click=deleteBook(book)>Delete account</button></td>
             </tr>
         </tbody>
     </table>
-    <add-book @newbook="addNewBook"></add-book>
+    <!--<add-book @newuser="addNewUser"></add-book>-->
 
 </template>
 
 
 <script>
-    import AddBook  from '@/components/AddBook.vue'
+    //import AddBook  from '@/components/AddBook.vue'
     import axios from 'axios'
 
     export default {
-        name: "Books",
+        name: "Users",
         data() {
             return {
-                books: [],
+                users: [],
                 message:""
             }
         },
-        components: {
-            AddBook
-        },
+        //components: {
+        //    AddBook
+        //},
         methods: {
-            getBooks() {
-                console.log(this.books)
-                axios.get('/api/books')
+            getUsers() {
+                axios.get('/api/users')
                     .then((response) => {
-                        this.books =  response.data;
+                        this.users =  response.data;
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
-            addNewBook(book) {
-                this.books.push(book);
-            },
-            deleteBook(book) {
-                console.log(this.books);
-                axios.delete('/api/books/' + book.id)
+            //addNewBook(book) {
+            //    this.books.push(book);
+            //},
+            deleteBook(user) {
+                axios.delete('/api/users/' + user.id)
                     .then(() => {
                         this.message = "Book removed";
-                        this.books.splice(this.books.indexOf(book), 1);
+                        this.books.splice(this.user.indexOf(user), 1);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -69,7 +67,7 @@
             }
         },
         mounted() {
-            this.getBooks();
+            this.getUsers();
         }
     }
 </script>

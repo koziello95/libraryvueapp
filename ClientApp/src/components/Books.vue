@@ -11,6 +11,8 @@
                 <th>Year Published</th>
                 <th>Status</th>
                 <th>Description</th>
+                <th v-if="isLibrarian">Expected return date</th>
+                <th>Queue length</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -20,7 +22,9 @@
                 <td>{{ book.author }}</td>
                 <td>{{ book.yearPublished }}</td>
                 <td>{{ bookStatuses[book.status]}} </td>
-                <td width="40%">{{ book.description}}</td>
+                <td width="20%">{{ book.description}}</td>
+                <th width="5%" v-if="isLibrarian">{{book.expectedReturnDate}}</th>
+                <td>{{ book.queueLength}} </td>
                 <!--<td><button v-if="isLibrarian" @click=borrow(book)>Borrow</button></td>-->
                 <td>
                     <button v-if="isLibrarian && bookStatuses[book.status]=='Taken'" @click=borrow(book) class="btn btn-info">Get in queue</button>
@@ -40,8 +44,9 @@
 
 
 <script>
-    import AddBook  from '@/components/AddBook.vue'
+    import AddBook from '@/components/AddBook.vue'
     import createHttp from "@/services/http";
+    import router from "@/router";
     export default {
         name: "Books",
         data() {
@@ -54,7 +59,8 @@
                     1: "Free",
                     2: "Taken",
                     3: "Already requested"
-                }
+                },
+                hasOverdueBooks: false
             }
         },
         computed: {            
@@ -68,6 +74,18 @@
                 this.http.get('/api/books')
                     .then((response) => {
                         this.books =  response.data;
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            checkIfHasOverdueBooks() {
+                this.http.get('/api/users/' + this.$store.state.userId)
+                    .then((response) => {
+                        if (response.data.success === false) {
+                            this.hasOverdueBooks = true;
+                            alert(response.data.message);
+                        }
                     })
                     .catch(function (error) {
                         alert(error);
@@ -116,8 +134,10 @@
         mounted() {
             this.http = createHttp(true);
             this.getBooks();
+            this.checkIfHasOverdueBooks();
         }
-    }</script>
+    }
+</script>
 
 
 <style>

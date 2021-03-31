@@ -29,10 +29,10 @@ namespace libraryVueApp.Dtos.BookDtos
                 Author = b.Author,
                 YearPublished = b.YearPublished,
                 Description = b.Description,
+                ExpectedReturnDate = _bookOrders.SingleOrDefault(bo => bo.OrderStatus == OrderStatus.Borrowed && bo.BookId == b.Id)?.ExpectedReturnDate,
                 Status = ResolveStatus(b, _bookOrders, _userId),
                 QueueLength = _bookOrders.Count(bo => bo.BookId == b.Id && bo.OrderStatus == OrderStatus.Requested)
-            }); ;
-
+            });
         }
 
         private BookStatus ResolveStatus(Book book, IEnumerable<BookOrder> bookOrders, int userId)

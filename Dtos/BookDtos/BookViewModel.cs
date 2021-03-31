@@ -15,6 +15,7 @@ namespace libraryVueApp.Dtos
         public int QueueLength { get; internal set; }
         public int Id { get; internal set; }
         public bool AlreadyRequested { get; internal set; }
+        public DateTime? ExpectedReturnDate { get; internal set; }
     }
 
     public enum BookStatus
