@@ -33,7 +33,7 @@ namespace libraryVueApp.Data
 
         public User GetUserById(int userId)
         {
-            throw new NotImplementedException();
+            return _libraryContext.Users.Find(userId);
         }
 
         public User GetUserByLogin(string login)

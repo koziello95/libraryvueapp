@@ -1,4 +1,5 @@
-﻿using System;
+﻿using libraryVueApp.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,8 +16,9 @@ namespace libraryapp.Models
         [Required]
         public string Author { get; set; }
         [Required]
-        public int  YearPublished { get; set; }
+        public int YearPublished { get; set; }
         [MaxLength(400)]
         public string Description { get; set; }
+        public List<BookOrder> BookOrders { get; set; }
     }
 }

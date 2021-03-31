@@ -9,7 +9,9 @@
                 <th>Title</th>
                 <th>Author</th>
                 <th>Year Published</th>
+                <th>Status</th>
                 <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -17,10 +19,16 @@
                 <td>{{ book.title }}</td>
                 <td>{{ book.author }}</td>
                 <td>{{ book.yearPublished }}</td>
+                <td>{{ bookStatuses[book.status]}} </td>
                 <td width="40%">{{ book.description}}</td>
-                <td><button v-if="isLibrarian" @click=borrow(book)>Borrow</button></td>
-                <td><button v-if="isLibrarian" @click=getInQueue(book)>Get in queue for the book</button></td>
-                <td><button v-if="isLibrarian" @click=deleteBook(book)>Delete</button></td>
+                <!--<td><button v-if="isLibrarian" @click=borrow(book)>Borrow</button></td>-->
+                <td>
+                    <button v-if="isLibrarian && bookStatuses[book.status]=='Taken'" @click=borrow(book) class="btn btn-info">Get in queue</button>
+                    <button v-if="isLibrarian && bookStatuses[book.status]=='Free'" @click=borrow(book) class="btn btn-info">Request the book</button>
+                    <button disabled v-if="isLibrarian && bookStatuses[book.status]=='Already requested'" @click=borrow(book) class="btn btn-info">Already requested</button>
+                    <!--<td><button v-if="isLibrarian" @click=getInQueue(book)>Get in queue for the book</button></td>-->
+                    <button v-if="isLibrarian" @click=deleteBook(book) class="btn btn-warning">Delete</button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -31,14 +39,20 @@
 
 <script>
     import AddBook  from '@/components/AddBook.vue'
-    import axios from 'axios'
-    
+    import createHttp from "@/services/http";
     export default {
         name: "Books",
         data() {
             return {
                 books: [],
-                message:""
+                message: "",
+                http: "",
+                bookStatuses:
+                {
+                    1: "Free",
+                    2: "Taken",
+                    3: "Already requested"
+                }
             }
         },
         computed: {            
@@ -49,8 +63,7 @@
         },
         methods: {
             getBooks() {
-                console.log(this.books)
-                axios.get('/api/books')
+                this.http.get('/api/books')
                     .then((response) => {
                         this.books =  response.data;
                     })
@@ -62,8 +75,7 @@
                 this.books.push(book);
             },
             deleteBook(book) {
-                console.log(this.books);
-                axios.delete('/api/books/' + book.id)
+                this.http.delete('/api/books/' + book.id)
                     .then(() => {
                         this.message = "Book removed";
                         this.books.splice(this.books.indexOf(book), 1);                       
@@ -71,9 +83,21 @@
                     .catch(function (error) {
                         alert(error);
                     });
+            },
+            borrow(book) {
+                console.log(book);
+                this.http.put('/api/books/' + book.id +'/order')
+                    .then((response) => {
+                        this.message = response.data.message;
+                        book.status = 3;
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
             }
         },
         mounted() {
+            this.http = createHttp(true);
             this.getBooks();
         }
     }

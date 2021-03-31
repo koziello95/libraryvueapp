@@ -6,6 +6,9 @@ using AutoMapper;
 using libraryapp.Models;
 using libraryVueApp.Data;
 using libraryVueApp.Dtos;
+using libraryVueApp.Dtos.BookDtos;
+using libraryVueApp.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,23 +17,53 @@ namespace libraryVueApp.Controllers
     //[Route("api/[controller]")]
     [Route("api/books")]
     [ApiController]
+    [Authorize]
     public class BookController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
+        private readonly IBookOrderRepository _bookOrderRepository;
+        private readonly IUserRepository _userRepository;
 
-        public BookController(IBookRepository bookRepository, IMapper mapper)
+        public BookController(IBookRepository bookRepository, IMapper mapper, IBookOrderRepository bookOrderRepository, IUserRepository userRepository)
         {
             _bookRepository = bookRepository;
-            this._mapper = mapper;
+            _mapper = mapper;
+            _bookOrderRepository = bookOrderRepository;
+            _userRepository = userRepository;
         }
 
-        // GET api/books
+        //// GET api/books
+        //[HttpGet]
+        //public ActionResult<IEnumerable<Book>> GetAllBooks()
+        //{
+        //    return Ok(_bookRepository.GetBooks());
+        //}
         [HttpGet]
-        public ActionResult<IEnumerable<Book>> GetAllBooks()
+        public ActionResult<IEnumerable<BookViewModel>> GetAllBooksExtended([FromHeader]int userId)
         {
-            return Ok(_bookRepository.GetBooks());
+            List<Book> books = _bookRepository.GetBooks().ToList();
+            List<BookOrder> bookOrders = _bookOrderRepository.GetBookOrders().ToList();
+
+            BookViewModelBuilder bookViewModelBuilder = new BookViewModelBuilder(books, bookOrders, userId);
+            IEnumerable<BookViewModel> booksViewModels = bookViewModelBuilder.Build();
+
+            return Ok(booksViewModels);
         }
+        [HttpGet("{id}/queue")]
+        public ActionResult<IEnumerable<BookOrderViewModel>> GetQueueDetails(int bookId)
+        {
+            List<BookOrder> bookOrders = _bookOrderRepository.GetBookOrders(bookId);
+
+            bookOrders.Select(bo => new BookOrderViewModel
+            {
+                //get user details
+            });
+            
+
+            return Ok(bookOrders);
+        }
+
         // GET api/books/{id}
         [HttpGet("{id}", Name = "GetBookById")]
         public ActionResult<Book> GetBookById(int id)
@@ -70,5 +103,38 @@ namespace libraryVueApp.Controllers
             _bookRepository.SaveChanges();
             return NoContent();
         }
+        [HttpPut("{bookId}/order")]
+        public ActionResult<RequestBookResult> RequestBook(int bookId, [FromHeader]int userId)
+        {
+            Book book = _bookRepository.GetBook(bookId);
+            if (book == null)
+                return NotFound("Book does not exist");
+            User user = _userRepository.GetUserById(userId);
+            if(user == null)
+                return NotFound("User that requested book does not exist"); //very unlikely
+
+            RequestBookResult result = _bookOrderRepository.RequestBook(book, user);
+
+            if (_bookOrderRepository.SaveChanges())
+                return Ok(result);
+
+            return StatusCode(500);
+        }
+
+        [HttpPut("{id}/return")]
+        public ActionResult<RequestBookResult> ReturnBook(int bookId, [FromBody]int returningUserId)
+        {
+            BookOrder bookOrder = _bookOrderRepository.GetLatestBookOrder(bookId, returningUserId);
+            if (bookOrder == null || bookOrder.OrderStatus != OrderStatus.Borrowed)
+                return NotFound("Failed to return the book. This user didn't have this book borrowed.");
+
+            ReturnBookResult result = _bookOrderRepository.ReturnBook(bookOrder);
+            if (_bookOrderRepository.SaveChanges())
+                return Ok(result);
+
+            return StatusCode(500);
+        }
+
     }
+
 }
