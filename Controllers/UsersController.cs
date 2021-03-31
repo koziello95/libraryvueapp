@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using libraryVueApp.Data;
 using libraryVueApp.Dtos.UserDtos;
 using libraryVueApp.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,7 @@ namespace libraryVueApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
